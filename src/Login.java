@@ -16,6 +16,7 @@ public class Login {
 	ResultSet rs;
 	String user;
 	String pass;
+	public String id;
 	/**
 	 * Launch the application.
 	 */
@@ -97,7 +98,8 @@ public class Login {
 				labelLogin.setFont(new Font("Lucida Grande", Font.BOLD, 16));
 				
 				
-				String sql ="select user,pass from admin where user='"+user+"'and pass='"+pass+"'";
+				
+				String sql ="select id,user,pass from admin where user='"+user+"'and pass='"+pass+"'";
 				st=connection.createStatement();
 				rs=st.executeQuery(sql);
 				
@@ -106,15 +108,16 @@ public class Login {
 				while(rs.next())
 				{
 					count=count+1;
-				
+					id=rs.getString(1);
+					
 				}
-		
 				
 				if (count == 1){
 					JOptionPane.showMessageDialog(null, "Login effettuato con successo!");
 					login.dispose();
 					Main window = new Main();
 					window.main.getContentPane().add(labelLogin);
+					
 					window.main.setVisible(true);
 					
 				}else if(count > 1){
