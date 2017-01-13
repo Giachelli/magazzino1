@@ -14,7 +14,5 @@ public class LoginMain {
 		
 		theView.frame.setVisible(true);
 		
-		//theView.setVisible(true);
-		
 		};
 }

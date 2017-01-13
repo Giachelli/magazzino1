@@ -3,14 +3,27 @@ package Model;
 public class LoginModel {
     private String userName;
     private String password;
+    private String codice;
    
-    public LoginModel(){
+    public String getCodice() {
+		return codice;
+	}
+
+	public void setCodice(String codice) {
+		this.codice = codice;
+	}
+
+	public LoginModel(){
        
     }
    
     public LoginModel(String username, String password){
         this.userName = username;
         this.password = password;
+    }
+    public LoginModel(String codice){
+        this.codice = codice;
+       
     }
 
     public String getPassword() {

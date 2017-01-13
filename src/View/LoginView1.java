@@ -77,6 +77,8 @@ public class LoginView1 implements ActionListener{
 		lblImg.setIcon(new ImageIcon(img));
 		frame.getContentPane().add(lblImg);
 		
+		
+		
 		btnAccedi = new JButton("Accedi");
 		btnAccedi.setBounds(190, 131, 117, 29);
 		btnAccedi.addActionListener(this);

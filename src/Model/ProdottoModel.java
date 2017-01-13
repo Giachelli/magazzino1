@@ -16,31 +16,33 @@ public class ProdottoModel {
 		private String settore;
 		private String reparto;
 		private String img;
-	
-	
 	public ProdottoModel(){
 	}
 	
-	/*public ProdottoModel(String nome, String marca, Float prezzo,Date inizio_offerta,Date fine_offerta,
-			Boolean offerta,Float prezzo_offerta,Integer qta,Date scadenza, String scaffale,String settore,
-			String reparto,String img){
+	public ProdottoModel(String nome, String marca, Float prezzo,Float prezzo_offerta,Integer qta,
+			String settore,String reparto,Boolean offerta,Date scadenza,
+			String scaffale,Date inizio_offerta,Date fine_offerta,String img)
+	{
         this.nome = nome;
         this.marca = marca;
         this.prezzo=prezzo;
-        this.inizio_offerta=inizio_offerta;
-        this.fine_offerta=fine_offerta;
-        this.offerta=offerta;
         this.prezzo_offerta=prezzo_offerta;
         this.qta=qta;
-        this.scadenza=scadenza;
-        this.scaffale=scaffale;
         this.settore=settore;
         this.reparto=reparto;
+        this.offerta=offerta;
+        this.scadenza=scadenza;
+        this.scaffale=scaffale;
+        this.inizio_offerta=inizio_offerta;
+        this.fine_offerta=fine_offerta;
         this.img=img;
-     }*/
+     }
 	
-	public ProdottoModel(String nome){
+	
+	public ProdottoModel(String nome,String reparto){
         this.nome = nome;
+        this.reparto=reparto;
+      
         
      }
 
@@ -147,11 +149,5 @@ public class ProdottoModel {
 	public void setImg(String img) {
 		this.img = img;
 	}
-
-	public String toString(){
-		return this.nome;
-		
-	}
-	
 	
 }

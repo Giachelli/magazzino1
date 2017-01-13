@@ -11,7 +11,7 @@ public class sqlConnection {
 		{
 			String driver="com.mysql.jdbc.Driver";
 			Class.forName(driver);
-			String db= "jdbc:mysql://localhost:8889/OOP1617";
+			String db= "jdbc:mysql://localhost:3306/OOP1617";
 			Connection conn = DriverManager.getConnection(db,"root","root");
 			//JOptionPane.showMessageDialog(null, "Connessione Riuscita!");
 			return conn;
