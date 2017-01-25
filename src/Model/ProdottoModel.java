@@ -2,6 +2,12 @@ package Model;
 
 import java.sql.Date;
 
+/**
+ * Classe ProdottoModel.java
+ * In questa classe vengono generati i getters e i setters relativi.
+ * @author IezziValerio
+ *
+ */
 public class ProdottoModel {
 		private String nome;
 		private String marca;

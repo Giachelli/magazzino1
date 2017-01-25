@@ -4,6 +4,7 @@ import java.awt.EventQueue;
 
 
 
+
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -46,14 +47,20 @@ import net.proteanit.sql.DbUtils;
 import com.connectiondb.*;
 
 
-import View.LoginView1;
+import View.LoginView;
 import com.application.*;
 
 
-
+/**
+ * Classe ProdottoView.java
+ * Questa classe implementa la vista, ovvero tutti i componenti visivi 
+ * relativi e appartenenti al frame "main".
+ * 
+ * @author Iezzi Valerio
+ */
 public class ProdottoView implements ActionListener{
 
-	public JFrame main;
+	public JFrame frameProdotto;
 	Connection connection = null;
 	
 	private ProdottoModel model;
@@ -100,25 +107,27 @@ public class ProdottoView implements ActionListener{
 	private JButton btnImmagine;
 	private JButton btnImmagine1;
 	public JLabel lblImmagine;
+	private JButton btnDipendenti;
+	private JButton btnTurni;
 
 	
 	public ProdottoView() {
 		
-		main = new JFrame();
-		main.setBounds(100, 100, 1280, 800);
-		main.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		main.getContentPane().setLayout(null);
+		frameProdotto = new JFrame();
+		frameProdotto.setBounds(100, 100, 1280, 800);
+		frameProdotto.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frameProdotto.getContentPane().setLayout(null);
 		
         connection=sqlConnection.dbConnector();
 
 		JLabel lblBenvenuto = new JLabel("Benvenuto,");
 		lblBenvenuto.setBounds(39, 6, 92, 16);
 		lblBenvenuto.setFont(new Font("Lucida Grande", Font.BOLD, 16));
-		main.getContentPane().add(lblBenvenuto);
+		frameProdotto.getContentPane().add(lblBenvenuto);
 		
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setBounds(30, 34, 1244, 627);
-		main.getContentPane().add(tabbedPane);
+		frameProdotto.getContentPane().add(tabbedPane);
 		
 		JPanel panel = new JPanel();
 		tabbedPane.addTab("Cerca prodotto", null, panel, null);
@@ -224,6 +233,7 @@ public class ProdottoView implements ActionListener{
 		btnCarica = new JButton("Carica prodotti in magazzino");
 		btnCarica.setBounds(0, 6, 208, 29);
 		panel.add(btnCarica);
+		
 		
 		//inizioPanel_1
 		JPanel panel_1 = new JPanel();
@@ -736,12 +746,23 @@ public class ProdottoView implements ActionListener{
 		panel_2.add(lblImmagine);
 	
 		btnLogout = new JButton("Logout");
-		btnLogout.setBounds(258, 2, 92, 29);
-		main.getContentPane().add(btnLogout);
+		btnLogout.setBounds(1182, 2, 92, 29);
+		frameProdotto.getContentPane().add(btnLogout);
+		
+		btnDipendenti = new JButton("Dipendenti");
+		btnDipendenti.setBounds(284, 2, 117, 29);
+		frameProdotto.getContentPane().add(btnDipendenti);
+		
+		btnTurni = new JButton("Turni");
+		btnTurni.setBounds(400, 2, 117, 29);
+		frameProdotto.getContentPane().add(btnTurni);
 		
 	}
 	
-	
+	/**
+	 * refreshTable1, con connessione preventiva al db, esegue una query che
+	 * visualizza nella table_1 tutti i prodotti dell'utente loggato. 
+	 */	
 public void refreshTable1(String codice){
 		
 		try {
@@ -757,7 +778,11 @@ public void refreshTable1(String codice){
 		}
 		
 	}
-	
+/**
+ * refreshTable, con connessione preventiva al db, esegue una query che
+ * visualizza nella table tutti i prodotti dell'utente loggato con reparto= Magazzino e quantità <5
+ * ordinati per quantità ascendente. 
+ */		
 public void refreshTable(String codice){
 		
 		try {
@@ -864,11 +889,21 @@ public void refreshTable(String codice){
 	       btnAzzera.addActionListener(log);
 	       }
 	  
-	  
+	/**
+	 * getProdotto:
+	 * recupero e passa al model il nome del prodotto dalla textNomeProdotto, e il reparto selezionato dalla comboBox.
+	 * 
+	 */	
 	  public ProdottoModel getProdotto(){
 	        model = new ProdottoModel(textNomeProdotto.getText().trim(),comboBox.getSelectedItem().toString());
 	        return model;       
 	    }
+	  
+	  /**
+		 * getProdotto2:
+		 * recupera e passa al model tutti i campi inseriti nella form per l'inserimento del prodotto.
+		 * 
+		 */	
 	  public ProdottoModel getProdotto2(){
 		  String reparto = null;
 		  Date inizio_offerta = null,fine_offerta=null,scadenza = null;
@@ -946,7 +981,11 @@ public void refreshTable(String codice){
 				  textScaffale.getText().trim(),inizio_offerta,fine_offerta,img); 
 		  return model;
 	  }
-	  
+	  /**
+		 * getProdotto3:
+		 * recupera e passa al model tutti i campi inseriti nella form per la modifica del prodotto.
+		 * 
+		 */	
 	  public ProdottoModel getProdotto3(){
 		  String reparto = null;
 		  Date inizio_offerta = null,fine_offerta=null,scadenza = null;
@@ -1047,5 +1086,11 @@ public void refreshTable(String codice){
 	       }
 	  public void addImmagine1Listener(ActionListener log) {
 		  	btnImmagine1.addActionListener(log);
+	       }
+	  public void dipendeteView(ActionListener log) {
+		  	btnDipendenti.addActionListener(log);
+	       }
+	  public void turniView(ActionListener log) {
+		  	btnTurni.addActionListener(log);
 	       }
 }

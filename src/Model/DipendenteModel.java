@@ -10,17 +10,13 @@ public class DipendenteModel {
 	public String Indirizzo;
 	public String Email;
 	public Date AnnoNascita;
-	public enum Mansione{ 
-		Cassa,
-		Sala,
-		Banco,
-	};
-	public Mansione MansioneDipendente;
-	public Date Data_Ass;
+	public String Mansione;
+    public Date Data_Ass;
 	public Date Data_Lic;
 	public Integer id;
-	public Integer Telefono;
+	public String Telefono;
 	public String immag;
+	
 	
 	
 	public DipendenteModel(){
@@ -44,11 +40,36 @@ public class DipendenteModel {
         this.img=img;
      }*/
 	
-	public DipendenteModel(String NomeDipendente){
+	public DipendenteModel(String NomeDipendente, String CognomeDipendente, String CodiceFisc, String Indirizzo, 
+			String Email, Date AnnoNascita, String Mansione, Date Data_Ass,
+			Date Data_Lic, Integer id, String Telefono, String immag)
+	
+	{
 		this.NomeDipendente= NomeDipendente;
+		this.CognomeDipendente= CognomeDipendente;
+		this.CodiceFisc= CodiceFisc;
+		this.Indirizzo=Indirizzo;
+		this.Email=Email;
+		this.AnnoNascita=AnnoNascita;
+		this.Mansione= Mansione;
+        this.Data_Ass=Data_Ass;
+	    this.Data_Lic=Data_Lic;
+	    this.id=id;
+	    this.Telefono=Telefono;
+	    this.immag=immag;
+	    
         
         
      }
+	
+	public DipendenteModel(String NomeDipendente, String Mansione){
+        this.NomeDipendente = NomeDipendente;
+        this.Mansione=Mansione;
+      
+        
+     }
+	
+	
 
 	public String getNomeDipendente() {
 		return NomeDipendente;
@@ -99,12 +120,12 @@ public class DipendenteModel {
 		this.AnnoNascita = AnnoNascita;
 	}
 
-	public Mansione getMansioneDipendente() {
-		return MansioneDipendente;
+	public String getMansione() {
+		return Mansione;
 	}
 
-	public void setMansioneDipendente(Mansione MansioneDipendente) {
-		this.MansioneDipendente= MansioneDipendente;
+	public void setMansione( String Mansione) {
+		this.Mansione= Mansione;
 	}
 	
 	public Date getData_Ass() {
@@ -132,12 +153,12 @@ public class DipendenteModel {
 		this.id=id;
 	}
 	
-	public Integer getTelefono()
+	public String getTelefono()
 	{
 		return Telefono;
 	}
 
-	public void setTelefono(Integer Telefono)
+	public void setTelefono(String Telefono)
 	{
 		this.Telefono=Telefono;
 	}
@@ -153,7 +174,13 @@ public class DipendenteModel {
 
 	public String toString(){
 		return this.NomeDipendente;
+		
 		}
 	
+	public String toString1(){
+		return this.Mansione;
+	}
+	
+
 	
 }

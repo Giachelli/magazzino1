@@ -1,6 +1,7 @@
 package Controller;
 
 import java.awt.Font;
+
 import java.awt.event.ActionEvent;
 
 
@@ -14,58 +15,82 @@ import javax.swing.JOptionPane;
 import com.connectiondb.*;
 import Model.LoginModel;
 import Model.ProdottoModel;
-import View.LoginView1;
+import View.LoginView;
 import View.ProdottoView;
 
 import com.application.*;
+
+/**
+ * Classe LoginController.java
+ * Questa classe implementa l'azione svolta alla pressione del btnLogin, andando a richiamare il model.
+ * Per implementare il LoginListener abbiamo bisogno in particolare della funzione booleana checkUser.
+ * Essa ci restituisce true o false, attraverso una query sql, se l'username e la password inseriti
+ * sono presenti nel database.
+ *  
+ *     
+ * @author Iezzi Valerio
+ *
+ */
 public class LoginController {
     private LoginModel model;
    
-    private LoginView1 view1;
+    private LoginView view;
     public Connection connection = null;
     public String codice=null;
     public String id=null;
     public JLabel lblid;
     
-    public LoginController(LoginView1 view){
-        this.view1 = view;
+    public LoginController(LoginView view){
+        this.view = view;
         connection=sqlConnection.dbConnector();
         view.addLoginListener(new LoginListener());
     }
-    
+
     class LoginListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             try {
-                model = view1.getUser();
+                model = view.getUser();
                 
                 JLabel labelLogin = new JLabel(model.getUserName());
 				labelLogin.setBounds(143, 7, 61, 16);
 				labelLogin.setFont(new Font("Lucida Grande", Font.BOLD, 16));
 				
-				
+				/**
+				 * Con questo if, passandogli la funzione checkUser, se restituisce true:
+				 * visualizziamo il messaggio "Login effettuato con successo!"
+				 * successivamente ci salviamo l'id dell'utente loggato attraverso la funzione checkid.
+				 * Andiamo quindi a visualizzare, chiamando e inizializzando l'MVC del Prodotto, il main
+				 * attraverso l'istruzione theView.main.setVisible(true); 
+				 * in seguito aggiungiamo al main una label che contiene l'username dell'utente loggato,
+				 * e il title della finesta da visualizzare ("Main Supermercato").
+				 * Se invece restituisce false, ovvero l'utente non è stato trovato:
+				 * viene visualizzato il messaggio "Username o Passaword errati".
+				 */
 				
                 if(checkUser(model)){
-                    view1.showMessage("Login effettuato con successo!");
+                    view.showMessage("Login effettuato con successo!");
                     id=checkid(model);
                     
-                    view1.frame.dispose();
+                    view.frameLogin.dispose();
                     ProdottoView theView = new ProdottoView();
             		ProdottoModel theModel= new ProdottoModel(); 
             		ProdottoController theController= new ProdottoController(theView);
             		
             		theController.id=id;
             		
-            		theView.main.setVisible(true);
-            		theView.main.add(labelLogin);
-            		theView.main.setTitle("Main Supermercato");
+            		theView.frameProdotto.setVisible(true);
+            		theView.frameProdotto.add(labelLogin);
+            		theView.frameProdotto.setTitle("Main Supermercato");
             		
                     
                     
                 }else{
-                    view1.showMessage("Username o Passaword errati");
+                	
+                    view.showMessage("Username o Passaword errati");
+                    
                 }                
             } catch (Exception ex) {
-                view1.showMessage(ex.getStackTrace().toString());
+                view.showMessage(ex.getStackTrace().toString());
             }
         }
     }
@@ -84,7 +109,7 @@ public class LoginController {
               return true;
             }
             
-            connection.close();
+            
         }catch(Exception e) {
         	JOptionPane.showMessageDialog(null, e);
             throw e;
@@ -105,7 +130,7 @@ public String checkid(LoginModel user) throws Exception {
               //System.out.println(codice);
             }
             
-            connection.close();
+            //connection.close();
         }catch(Exception e) {
         	JOptionPane.showMessageDialog(null, e);
             throw e;

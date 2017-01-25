@@ -1,5 +1,10 @@
 package Model;
-
+/**
+ * Classe LoginModel.java
+ * In questa classe vengono generati i getters e i setters relativi.
+ * @author IezziValerio
+ *
+ */
 public class LoginModel {
     private String userName;
     private String password;
