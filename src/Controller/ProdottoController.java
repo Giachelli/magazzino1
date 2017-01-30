@@ -1,10 +1,7 @@
 package Controller;
 
+import java.awt.Font;
 import java.awt.event.ActionEvent;
-
-
-
-
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.Date;
@@ -12,21 +9,20 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import com.connectiondb.*;
-
 import Model.DipendenteModel;
 import Model.LoginModel;
 import View.DipendenteView;
 import View.LoginView;
-
 import Model.ProdottoModel;
 import Model.TurniModel;
 import View.ProdottoView;
 import View.TurniView;
 import net.proteanit.sql.DbUtils;
+import Controller.LoginController;
 
 /**
  * Classe ProdottoController.java
@@ -38,17 +34,16 @@ import net.proteanit.sql.DbUtils;
  */
 public class ProdottoController {
 	private ProdottoModel model;
-
 	public ResultSet rs;   
 	public String id;
     private ProdottoView view;
-    
     Connection connection = null;
+    public JLabel labelLogin;
+    public String label;
     
     public ProdottoController(ProdottoView view){
     	
-    	
-        this.view = view;
+    	this.view = view;
         connection=sqlConnection.dbConnector();
         view.addNomeProdottoListener(new CercaProdottoNome());
         view.addCercaRepartoListener(new CercaProdottoReparto());
@@ -64,16 +59,25 @@ public class ProdottoController {
         view.addImmagine1Listener(new ScegliImmagine());
         view.dipendeteView(new dipendenteView());
         view.turniView(new turniView());
+        
+        labelLogin = new JLabel();
+    	labelLogin.setBounds(143, 7, 61, 16);
+    	labelLogin.setFont(new Font("Lucida Grande", Font.BOLD, 16));
+    	view.frameProdotto.setTitle("Main Supermercato");
     }
    
     class turniView implements ActionListener {
     	public void actionPerformed(ActionEvent e) {
     		
     		TurniView theView = new TurniView();
-    		TurniModel theModel= new TurniModel(); 
+    		@SuppressWarnings("unused")
+			TurniModel theModel= new TurniModel(); 
     		TurniController theController= new TurniController(theView);
     		theController.id=id;
+    		theController.label=label;
     		theView.frameTurni.setVisible(true);
+    		labelLogin.setText(label);
+    		theView.frameTurni.add(labelLogin);
     		view.frameProdotto.dispose();
     	}
     }
@@ -82,10 +86,14 @@ public class ProdottoController {
     	public void actionPerformed(ActionEvent e) {
     		
     		DipendenteView theView = new DipendenteView();
-    		DipendenteModel theModel= new DipendenteModel(); 
+    		@SuppressWarnings("unused")
+			DipendenteModel theModel= new DipendenteModel(); 
     		DipendenteController theController= new DipendenteController(theView);
     		theController.id=id;
+    		theController.label=label;
     		theView.frameDipendente.setVisible(true);
+    		labelLogin.setText(label);
+    		theView.frameDipendente.add(labelLogin);
     		view.frameProdotto.dispose();
     	}
     }
@@ -147,7 +155,7 @@ public class ProdottoController {
     		pst.close();
     		rs.close();
     	} catch (SQLException e1) {
-    		// TODO Auto-generated catch block
+    		
     		e1.printStackTrace();
     	}
     	
@@ -176,7 +184,7 @@ class CercaProdottoNome implements ActionListener {
 					Statement st=connection.createStatement();
 					rs=st.executeQuery(sql);
 				} catch (SQLException e2) {
-					// TODO Auto-generated catch block
+					
 					e2.printStackTrace();
 				}
 				
@@ -201,7 +209,7 @@ class CercaProdottoNome implements ActionListener {
 					Statement st=connection.createStatement();
 					rs=st.executeQuery(sql);
 				} catch (SQLException e2) {
-					// TODO Auto-generated catch block
+					
 					e2.printStackTrace();
 				}
 				
@@ -223,7 +231,7 @@ class CercaProdottoNome implements ActionListener {
 				Statement st=connection.createStatement();
 				rs=st.executeQuery(sql);
 			} catch (SQLException e2) {
-				// TODO Auto-generated catch block
+				
 				e2.printStackTrace();
 			}
 			
@@ -232,6 +240,7 @@ class CercaProdottoNome implements ActionListener {
 		}
                 
     }
+    
     
     /**
      * InserisciProdotto ci permette, attraverso una connessione stabilita a priori con il db, 
@@ -401,7 +410,7 @@ class CercaProdottoNome implements ActionListener {
 				view.refreshForm();
 				pst.close();
 		} catch (Exception e2){
-			// TODO Auto-generated catch block
+			
 			JOptionPane.showMessageDialog(null, "Inserire i campi obbligatori o in modo corretto!");
 			//e2.printStackTrace();
 			
@@ -467,7 +476,9 @@ class CercaProdottoNome implements ActionListener {
 				view.frameProdotto.dispose();
 				
 				LoginView theView = new LoginView();
+				@SuppressWarnings("unused")
 				LoginModel theModel = new LoginModel(); 
+				@SuppressWarnings("unused")
 				LoginController theController = new LoginController(theView);
 				
 				theView.frameLogin.setVisible(true);
@@ -644,8 +655,3 @@ class CercaProdottoNome implements ActionListener {
     
     
 }
-                
-    	
-
-
-

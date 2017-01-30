@@ -14,10 +14,6 @@ public class LoginModel {
 		return codice;
 	}
 
-	public void setCodice(String codice) {
-		this.codice = codice;
-	}
-
 	public LoginModel(){
        
     }
@@ -35,15 +31,8 @@ public class LoginModel {
         return password;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String getUserName() {
         return userName;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
 }

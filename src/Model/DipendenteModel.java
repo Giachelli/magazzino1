@@ -15,10 +15,12 @@ public class DipendenteModel {
 	public Date Data_Lic;
 	public Integer id;
 	public String Telefono;
-	public String immag;
+	public String Nome_Turno;
 	
 	
 	
+	
+
 	public DipendenteModel(){
 	}
 	
@@ -42,7 +44,7 @@ public class DipendenteModel {
 	
 	public DipendenteModel(String NomeDipendente, String CognomeDipendente, String CodiceFisc, String Indirizzo, 
 			String Email, Date AnnoNascita, String Mansione, Date Data_Ass,
-			Date Data_Lic, Integer id, String Telefono, String immag)
+			Date Data_Lic, Integer id, String Telefono, String Nome_Turno)
 	
 	{
 		this.NomeDipendente= NomeDipendente;
@@ -56,18 +58,23 @@ public class DipendenteModel {
 	    this.Data_Lic=Data_Lic;
 	    this.id=id;
 	    this.Telefono=Telefono;
-	    this.immag=immag;
+	    this.Nome_Turno=Nome_Turno;
 	    
         
+        
+     }
+	
+	public DipendenteModel(String NomeDipendente, String Mansione, String Nome_Turno){
+        this.NomeDipendente = NomeDipendente;
+        this.Mansione=Mansione;
+        this.Nome_Turno=Nome_Turno;
         
      }
 	
 	public DipendenteModel(String NomeDipendente, String Mansione){
         this.NomeDipendente = NomeDipendente;
         this.Mansione=Mansione;
-      
-        
-     }
+	}
 	
 	
 
@@ -162,15 +169,6 @@ public class DipendenteModel {
 	{
 		this.Telefono=Telefono;
 	}
-	
-	
-	public String getImmag() {
-		return immag;
-	}
-
-	public void setImmag(String immag) {
-		this.immag = immag;
-	}
 
 	public String toString(){
 		return this.NomeDipendente;
@@ -179,6 +177,14 @@ public class DipendenteModel {
 	
 	public String toString1(){
 		return this.Mansione;
+	}
+	
+	public String getNome_Turno() {
+		return Nome_Turno;
+	}
+
+	public void setNome_Turno(String nome_Turno) {
+		Nome_Turno = nome_Turno;
 	}
 	
 

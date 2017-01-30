@@ -1,5 +1,6 @@
 package Controller;
 
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 
 
@@ -14,6 +15,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import com.connectiondb.*;
 
@@ -34,20 +36,28 @@ public class TurniController {
 	public ResultSet rs;   
 	public String id;
     private TurniView view;
-    
+    public JLabel labelLogin;
+    public String label;
     Connection connection = null;
+	
     
     public TurniController (TurniView view) {
     	this.view = view;
         connection=sqlConnection.dbConnector();
         
         view.addCaricaTurnoListener(new CaricaTurno());
+        view.addCaricaTurnoListener1(new CaricaTurno1());
         view.addEliminaTurnoListener(new EliminaTurno());
         view.addModificaTurnoListener(new ModificaTurno());
         view.addInserisciTurnoListener(new InserisciTurno());
         view.prodottoView(new prodottoView());
         view.dipendenteView(new dipendenteView());
         view.Logout(new Logout());
+        
+        labelLogin = new JLabel();
+    	labelLogin.setBounds(143, 7, 61, 16);
+    	labelLogin.setFont(new Font("Lucida Grande", Font.BOLD, 16));
+    	view.frameTurni.setTitle("Main Supermercato");
     }
     
     class dipendenteView implements ActionListener {
@@ -57,7 +67,10 @@ public class TurniController {
     		DipendenteModel theModel= new DipendenteModel(); 
     		DipendenteController theController= new DipendenteController(theView);
     		theController.id=id;
+    		theController.label=label;
     		theView.frameDipendente.setVisible(true);
+    		labelLogin.setText(label);
+    		theView.frameDipendente.add(labelLogin);
     		view.frameTurni.dispose();
 			
     		
@@ -70,7 +83,10 @@ public class TurniController {
     		ProdottoModel theModel= new ProdottoModel(); 
     		ProdottoController theController= new ProdottoController(theView);
     		theController.id=id;
+    		theController.label=label;
     		theView.frameProdotto.setVisible(true);
+    		labelLogin.setText(label);
+    		theView.frameProdotto.add(labelLogin);
     		view.frameTurni.dispose();
 			
     		
@@ -105,6 +121,25 @@ public class TurniController {
         		PreparedStatement pst = connection.prepareStatement(sql);
         		ResultSet rs=pst.executeQuery(sql);
         		view.table_2.setModel(DbUtils.resultSetToTableModel(rs));
+        		pst.close();
+        		rs.close();
+        	} catch (SQLException e1) {
+        		// TODO Auto-generated catch block
+        		e1.printStackTrace();
+        	}
+			
+  		  }
+    	}
+    
+    class CaricaTurno1 implements ActionListener {
+    	public void actionPerformed(ActionEvent e) {
+    		
+    		String sql ="select id_turno,nome_turno,lunedi,martedi,mercoledi,giovedi,venerdi,sabato,tot_ore_settimanali from turno where id='"+id+"'";
+        	try {
+        		
+        		PreparedStatement pst = connection.prepareStatement(sql);
+        		ResultSet rs=pst.executeQuery(sql);
+        		view.table.setModel(DbUtils.resultSetToTableModel(rs));
         		pst.close();
         		rs.close();
         	} catch (SQLException e1) {
@@ -168,12 +203,25 @@ public class TurniController {
 			}else{
 				pst.setString(1, nome);
 			}
-				pst.setString(2, lunedi);
-				pst.setString(3, martedi);
-				pst.setString(4, mercoledi);
-				pst.setString(5, giovedi);
-				pst.setString(6, venerdi);
-				pst.setString(7, sabato);
+			
+			if (lunedi.equals("")==true){
+			}else pst.setString(2, lunedi);
+			
+			if(martedi.equals("")==true){
+			}else pst.setString(3, martedi);
+			
+			if(mercoledi.equals("")==true){
+			}else pst.setString(4, mercoledi);
+			
+			if(giovedi.equals("")==true){
+			}else pst.setString(5, giovedi);
+			
+			if(venerdi.equals("")==true){
+			}else pst.setString(6, venerdi);
+			
+			if(sabato.equals("")==true){
+			}else pst.setString(7, sabato);
+			
 				pst.setInt(8, ore);
 			pst.executeUpdate();
 			
@@ -211,12 +259,25 @@ public class TurniController {
 			}else{
 				pst.setString(1, nome);
 			}
-				pst.setString(2, lunedi);
-				pst.setString(3, martedi);
-				pst.setString(4, mercoledi);
-				pst.setString(5, giovedi);
-				pst.setString(6, venerdi);
-				pst.setString(7, sabato);
+			
+			if (lunedi.equals("")==true){
+			}else pst.setString(2, lunedi);
+			
+			if(martedi.equals("")==true){
+			}else pst.setString(3, martedi);
+			
+			if(mercoledi.equals("")==true){
+			}else pst.setString(4, mercoledi);
+			
+			if(giovedi.equals("")==true){
+			}else pst.setString(5, giovedi);
+			
+			if(venerdi.equals("")==true){
+			}else pst.setString(6, venerdi);
+			
+			if(sabato.equals("")==true){
+			}else pst.setString(7, sabato);
+			
 				pst.setInt(8, model.Calcola_ore());
 				pst.setString(9, id);
 			pst.executeUpdate();
@@ -227,7 +288,7 @@ public class TurniController {
 			view.refreshFormTurno();
 			view.refreshFormTurno1();
 				}catch(Exception e1){
-					JOptionPane.showMessageDialog(null, "Inserire i campi obbligatori o in modo corretto!");
+					JOptionPane.showMessageDialog(null, "Inserire i campi obbligatori");
 					e1.printStackTrace();
 				}
     	

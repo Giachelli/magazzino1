@@ -1,17 +1,10 @@
 package View;
 
-import java.awt.EventQueue;
-
-
-
-
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.awt.Font;
-
-
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.sql.Connection;
@@ -20,7 +13,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -31,30 +23,21 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
-
-import Model.LoginModel;
 import Model.ProdottoModel;
-//import Controller.ProdottoController;
-import Controller.LoginController;
 import net.proteanit.sql.DbUtils;
 import com.connectiondb.*;
-
-
-import View.LoginView;
-import com.application.*;
 
 
 /**
  * Classe ProdottoView.java
  * Questa classe implementa la vista, ovvero tutti i componenti visivi 
- * relativi e appartenenti al frame "main".
+ * relativi e appartenenti al frame "frameProdotto".
  * 
  * @author Iezzi Valerio
  */
@@ -87,17 +70,17 @@ public class ProdottoView implements ActionListener{
 	private JTextField textInizioOfferta1;
 	private JTextField textFineOfferta1;
 	private JCheckBox checkBoxOfferta;
-	private JComboBox comboBoxSettore;
-	private JComboBox comboBoxReparto;
+	private JComboBox<String> comboBoxSettore;
+	private JComboBox<String> comboBoxReparto;
 	private JCheckBox checkBoxOfferta1;
-	private JComboBox comboBoxSettore1;
-	private JComboBox comboBoxReparto1;
+	private JComboBox<String> comboBoxSettore1;
+	private JComboBox<String> comboBoxReparto1;
 	private JButton btnCerca;
 	private JButton btnCercaOfferte;
 	private JButton btnNomeProdotto;
 	private JButton btnInserisci;
 	private JButton btnAzzera;
-	private JComboBox comboBox;
+	private JComboBox<String> comboBox;
 	public JFileChooser fileChooser;
 	private JButton btnModifica;
 	private JButton btnElimina;
@@ -109,7 +92,7 @@ public class ProdottoView implements ActionListener{
 	public JLabel lblImmagine;
 	private JButton btnDipendenti;
 	private JButton btnTurni;
-
+	public JLabel labelLogin;
 	
 	public ProdottoView() {
 		
@@ -119,7 +102,11 @@ public class ProdottoView implements ActionListener{
 		frameProdotto.getContentPane().setLayout(null);
 		
         connection=sqlConnection.dbConnector();
-
+        
+        labelLogin = new JLabel();
+    	labelLogin.setBounds(143, 7, 61, 16);
+    	labelLogin.setFont(new Font("Lucida Grande", Font.BOLD, 16));
+        
 		JLabel lblBenvenuto = new JLabel("Benvenuto,");
 		lblBenvenuto.setBounds(39, 6, 92, 16);
 		lblBenvenuto.setFont(new Font("Lucida Grande", Font.BOLD, 16));
@@ -188,7 +175,7 @@ public class ProdottoView implements ActionListener{
 		panel.add(textNomeProdotto);
 		
 		
-		comboBox = new JComboBox();
+		comboBox = new JComboBox<String>();
 		comboBox.setBounds(635, 32, 141, 27);
 		comboBox.addItem("");
 		comboBox.addItem("Magazzino");
@@ -319,7 +306,7 @@ public class ProdottoView implements ActionListener{
 		panel_1.add(textQta);
 		
 		
-		comboBoxSettore = new JComboBox();
+		comboBoxSettore = new JComboBox<String>();
 		comboBoxSettore.setBounds(151, 246, 152, 27);
 		panel_1.add(comboBoxSettore);
 		comboBoxSettore.addItem("");
@@ -338,7 +325,7 @@ public class ProdottoView implements ActionListener{
 		comboBoxSettore.addItem("Liquidi & Bevande");
 		
 		
-		comboBoxReparto = new JComboBox();
+		comboBoxReparto = new JComboBox<String>();
 		comboBoxReparto.setBounds(150, 285, 153, 27);
 		panel_1.add(comboBoxReparto);
 		comboBoxReparto.addItem("");
@@ -468,7 +455,7 @@ public class ProdottoView implements ActionListener{
 		scrollPane_1.setBounds(21, 34, 805, 485);
 		panel_2.add(scrollPane_1);
 		
-		comboBoxSettore1 = new JComboBox();
+		comboBoxSettore1 = new JComboBox<String>();
 		comboBoxSettore1.setBounds(980, 328, 133, 27);
 		panel_2.add(comboBoxSettore1);
 		comboBoxSettore1.addItem("");
@@ -487,7 +474,7 @@ public class ProdottoView implements ActionListener{
 		comboBoxSettore1.addItem("Liquidi & Bevande");
 		
 		
-		comboBoxReparto1 = new JComboBox();
+		comboBoxReparto1 = new JComboBox<String>();
 		comboBoxReparto1.setBounds(980, 367, 133, 27);
 		panel_2.add(comboBoxReparto1);
 		comboBoxReparto1.addItem("");
@@ -773,7 +760,7 @@ public void refreshTable1(String codice){
 			st.close();
 			rs.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 		
@@ -793,7 +780,7 @@ public void refreshTable(String codice){
 			
 			rs.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 		
@@ -837,13 +824,13 @@ public void refreshTable(String codice){
 		pst.close();
 		rs.close();
 	} catch (SQLException e1) {
-		// TODO Auto-generated catch block
+		
 		e1.printStackTrace();
 	}
 		
 }
 	public void mostraprodotti2(String codice){
-		//connection=sqlConnection.dbConnector();
+		
 		String sql1 ="select * from prodotto where id='"+codice+"'";
 		
 		try {
@@ -853,7 +840,7 @@ public void refreshTable(String codice){
 			 st.close();
 			 rs.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 		

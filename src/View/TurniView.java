@@ -51,7 +51,14 @@ import javax.swing.DefaultComboBoxModel;
 
 import javax.swing.JFrame;
 
-
+/**
+ * La classe TurniView contiene tutta l'interfaccia grafica 
+ * della sezione dipendenti dell'applicazione.
+ * 
+ * La classe � suddivisa in 3 parti.
+ * @author Riccardo
+ *
+ */
 public class TurniView implements ActionListener{
 
 	public JFrame frameTurni;
@@ -79,6 +86,13 @@ public class TurniView implements ActionListener{
 	private JButton btnProdotto;
 	private JButton btnDipendenti;
 	private JButton btnLogout;
+	private JButton btnVisualizzaTurni_1;
+	private JScrollPane scrollPane;
+	private JPanel panel;
+	public JTable table;
+	private JButton btnVisualizzaTurni1;
+	private JScrollPane scrollPane_1;
+	private JTable table_1;
 
 	public TurniView() {
 		frameTurni = new JFrame();
@@ -97,8 +111,70 @@ public class TurniView implements ActionListener{
 		tabbedPane.setBounds(30, 34, 1244, 627);
 		frameTurni.getContentPane().add(tabbedPane);
 		
+		//inizio panel VISUALIZZA
+		/**
+		 * il primo JPanel contiene tutta la grafica e i pulsanti relativi alla 
+		 * visualizzazzione dei turni e dei dipendenti che fanno parte ad un 
+		 * determinato turno selezionato 
+		 */
+		panel = new JPanel();			
+		tabbedPane.addTab("Visualizza Turni", null, panel, null);
+		panel.setLayout(null);
+		
+		scrollPane = new JScrollPane();
+		scrollPane.setBounds(28, 69, 1136, 170);
+		panel.add(scrollPane);
+		
+		table = new JTable();
+		scrollPane.setViewportView(table);
+		
+		btnVisualizzaTurni1 = new JButton("Visualizza Turni");
+		btnVisualizzaTurni1.setBounds(28, 11, 145, 32);
+		panel.add(btnVisualizzaTurni1);
+		
+		scrollPane_1 = new JScrollPane();
+		scrollPane_1.setBounds(28, 299, 1136, 272);
+		panel.add(scrollPane_1);
+		
+		table_1 = new JTable();
+		scrollPane_1.setViewportView(table_1);
+		
+		JLabel lblVisualizzaIDipendenti = new JLabel("Visualizza i dipendenti che hanno il Turno SELEZIONATO come Turno attivo");
+		lblVisualizzaIDipendenti.setBounds(28, 274, 561, 14);
+		panel.add(lblVisualizzaIDipendenti);
+		
+		JLabel lblNewLabel_8 = new JLabel("Visualizza tutti i turni");
+		lblNewLabel_8.setBounds(28, 54, 165, 14);
+		panel.add(lblNewLabel_8);
+		
+		table.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				
+				try{
+					int row=table.getSelectedRow();
+					String codice_=(table.getModel().getValueAt(row, 0)).toString();
+					String query="select * from dipendente where id_turno='"+codice_+"'";
+					PreparedStatement pst=connection.prepareStatement(query);
+					ResultSet rs=pst.executeQuery();
+					table_1.setModel(DbUtils.resultSetToTableModel(rs));
+					pst.close();
+				}catch(Exception e1){
+					e1.printStackTrace();
+				}
+				
+			}
+		});
+		
+		
+		
 		
 		//inizio panel 1
+		
+		/**
+		 * il secondo JPanel contiene l'interfaccia utilizzata per modificare
+		 * oppure eliminare i turni
+		 */
 		JPanel panel_4 = new JPanel();
 		tabbedPane.addTab("Modifica/Elimina Turni", null, panel_4, null);
 		panel_4.setLayout(null);
@@ -111,31 +187,31 @@ public class TurniView implements ActionListener{
 		btnVisualizzaTurni.setBounds(28, 11, 145, 32);
 		panel_4.add(btnVisualizzaTurni);
 		
-		JLabel lblNomeTurno = new JLabel("Nome Turno");
-		lblNomeTurno.setBounds(769, 50, 94, 14);
+		JLabel lblNomeTurno = new JLabel("Nome Turno (*)");
+		lblNomeTurno.setBounds(769, 50, 104, 14);
 		panel_4.add(lblNomeTurno);
 		
-		JLabel lblNewLabel_1 = new JLabel("Luned\u00EC");
+		JLabel lblNewLabel_1 = new JLabel("Luned\u00EC (*)");
 		lblNewLabel_1.setBounds(769, 110, 94, 14);
 		panel_4.add(lblNewLabel_1);
 		
-		JLabel lblNewLabel_2 = new JLabel("Marted\u00EC");
+		JLabel lblNewLabel_2 = new JLabel("Marted\u00EC (*)");
 		lblNewLabel_2.setBounds(769, 170, 94, 14);
 		panel_4.add(lblNewLabel_2);
 		
-		JLabel lblNewLabel_3 = new JLabel("Mercoled\u00EC");
+		JLabel lblNewLabel_3 = new JLabel("Mercoled\u00EC (*)");
 		lblNewLabel_3.setBounds(769, 230, 94, 14);
 		panel_4.add(lblNewLabel_3);
 		
-		JLabel lblNewLabel_4 = new JLabel("Gioved\u00EC");
+		JLabel lblNewLabel_4 = new JLabel("Gioved\u00EC (*)");
 		lblNewLabel_4.setBounds(769, 290, 94, 14);
 		panel_4.add(lblNewLabel_4);
 		
-		JLabel lblNewLabel_5 = new JLabel("Venerd\u00EC");
+		JLabel lblNewLabel_5 = new JLabel("Venerd\u00EC (*)");
 		lblNewLabel_5.setBounds(769, 350, 94, 14);
 		panel_4.add(lblNewLabel_5);
 		
-		JLabel lblNewLabel_6 = new JLabel("Sabato");
+		JLabel lblNewLabel_6 = new JLabel("Sabato (*)");
 		lblNewLabel_6.setBounds(769, 410, 94, 14);
 		panel_4.add(lblNewLabel_6);
 		
@@ -188,6 +264,18 @@ public class TurniView implements ActionListener{
 		
 		table_2 = new JTable();
 		scrollPane_2.setViewportView(table_2);
+		
+		JLabel lblNewLabel = new JLabel("MATTINA: ore 8-13");
+		lblNewLabel.setBounds(28, 392, 145, 14);
+		panel_4.add(lblNewLabel);
+		
+		JLabel lblNewLabel_7 = new JLabel("POMERIGGIO: ore 15-20");
+		lblNewLabel_7.setBounds(28, 436, 167, 14);
+		panel_4.add(lblNewLabel_7);
+		
+		JLabel lblCampi = new JLabel("(*) := campi obbligatori");
+		lblCampi.setBounds(28, 499, 196, 14);
+		panel_4.add(lblCampi);
 		table_2.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -285,7 +373,11 @@ public class TurniView implements ActionListener{
 		});
 		
 		
-		//inizio panel 5
+		//inizio panel INSERISCI
+		/**
+		 * il terzo ed ultimo JPanel contiene l'interfaccia necessaria per inserire 
+		 * un nuovo turno
+		 */
 		JPanel panel_5 = new JPanel();			
 		tabbedPane.addTab("Inserisci Turno", null, panel_5, null);
 		panel_5.setLayout(null);
@@ -353,9 +445,13 @@ public class TurniView implements ActionListener{
 		comboBoxSabato1.setBounds(350, 418, 124, 17);
 		panel_5.add(comboBoxSabato1);
 		
-		btnInserisciTurno = new JButton("INSERISCI");
-		btnInserisciTurno.setBounds(587, 223, 124, 42);
+		btnInserisciTurno = new JButton("Inserisci");
+		btnInserisciTurno.setBounds(212, 479, 110, 27);
 		panel_5.add(btnInserisciTurno);
+		
+		JLabel lblNewLabel_9 = new JLabel("Per un inserimento corretto, TUTTI i campi sono obbligatori");
+		lblNewLabel_9.setBounds(126, 518, 384, 14);
+		panel_5.add(lblNewLabel_9);
 		
 		btnProdotto = new JButton("Prodotto");
 		btnProdotto.setBounds(261, 2, 117, 29);
@@ -436,6 +532,9 @@ public void refreshTableTurno(String codice){
 	public void addCaricaTurnoListener(ActionListener log) {
 	  	btnVisualizzaTurni.addActionListener(log);
        }
+	public void addCaricaTurnoListener1(ActionListener log) {
+	  	btnVisualizzaTurni1.addActionListener(log);
+       }
   public void addEliminaTurnoListener(ActionListener log) {
 	  	btnEliminaTurno.addActionListener(log);
        }
@@ -454,4 +553,4 @@ public void refreshTableTurno(String codice){
   public void Logout(ActionListener log) {
 	  	btnLogout.addActionListener(log);
      }
-}
+	}

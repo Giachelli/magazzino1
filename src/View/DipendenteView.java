@@ -5,11 +5,14 @@ import java.awt.EventQueue;
 
 
 
+
+
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.awt.Font;
+ 
 
 
 import java.awt.Image;
@@ -75,7 +78,6 @@ public class DipendenteView implements ActionListener{
 	public JButton btnModifica;
 	public JButton btnElimina;
 	public JButton btnCaricaDip1;
-	public JButton btnImmagine2;
 	public JLabel lblImmagine;
 	private JComboBox comboBoxRep;
 	private JComboBox comboBoxMansione;
@@ -107,7 +109,46 @@ public class DipendenteView implements ActionListener{
     private JButton btnProdotto;
     private JButton btnTurni;
     private JButton btnLogout;
+    private JComboBox TurnoBox;
+    private JLabel Turno;
+    private JComboBox TurnoBox2;
+    
+    
 
+    public void fillComboBox(){
+		try {
+			 String sql="select * from turno";
+             PreparedStatement pst=connection.prepareStatement(sql);
+             ResultSet rs=pst.executeQuery();
+             while(rs.next())
+			 {
+				TurnoBox.addItem(rs.getString("nome_turno"));
+			 };
+			
+		} catch (SQLException e) {
+			
+			e.printStackTrace();
+		}
+    	
+    }
+    public void fillComboBox2(){
+		try {
+			 String sql="select * from turno";
+             PreparedStatement pst=connection.prepareStatement(sql);
+             ResultSet rs=pst.executeQuery();
+             while(rs.next())
+			 {
+				TurnoBox2.addItem(rs.getString("nome_turno"));
+			 };
+			
+		} catch (SQLException e) {
+			
+			e.printStackTrace();
+		}
+    	
+    }
+    
+    
 	public DipendenteView() {
 		
 		frameDipendente = new JFrame();
@@ -271,7 +312,19 @@ public class DipendenteView implements ActionListener{
 				JLabel label_6 = new JLabel("(*) Campi obbligatori");
 				label_6.setBounds(242, 559, 139, 16);
 				panel_1.add(label_6);
-		
+				
+				
+                TurnoBox = new JComboBox();
+				TurnoBox.setBounds(449, 53, 184, 27);
+				panel_1.add(TurnoBox);
+				
+				Turno = new JLabel("Turno:");
+				Turno.setBounds(363, 57, 61, 16);
+				panel_1.add(Turno);
+				
+				
+				fillComboBox();
+				
 				
 				JPanel panel = new JPanel();
 				tabbedPane.addTab("Cerca dipendente", null, panel, null);
@@ -314,6 +367,34 @@ public class DipendenteView implements ActionListener{
 				
 
 				table1 = new JTable();
+				table1.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						try{
+							int row=table1.getSelectedRow();
+							String codice_=(table1.getModel().getValueAt(row, 0)).toString();
+							String query="select * from dipendente where codice='"+codice_+"'";
+							PreparedStatement pst=connection.prepareStatement(query);
+							ResultSet rs=pst.executeQuery();
+							while(rs.next()){
+								lblNomeImg.setText(rs.getString("nome"));
+								lblCognomeImg.setText(rs.getString("cognome"));
+								lblMansioneImg.setText(rs.getString("mansione"));
+						        lblEmailImg.setText(rs.getString("email"));
+								
+						        lblTelefonoImg.setText(rs.getString("telefono"));
+						     
+							
+						}
+							pst.close();
+						}catch(Exception e1){
+							e1.printStackTrace();
+						}
+
+				}
+				});
+
+				
 				scrollPane.setViewportView(table1);
 				
 				
@@ -372,7 +453,7 @@ public class DipendenteView implements ActionListener{
 				
 
 				JPanel panel_2 = new JPanel();
-				tabbedPane.addTab("Modifica Prodotto", null, panel_2, null);
+				tabbedPane.addTab("Modifica Dipendente", null, panel_2, null);
 				panel_2.setLayout(null);
 				
 				comboBoxRep1 = new JComboBox();
@@ -516,15 +597,11 @@ public class DipendenteView implements ActionListener{
 				btnElimina.setBounds(716, 538, 117, 29);
 				panel_2.add(btnElimina);
 				
-			
-				
-				
-				
-				btnImmagine2 = new JButton("Carica immagine");
-				btnImmagine2.setBounds(21, 6, 139, 29);
-				panel_2.add(btnImmagine2);
-				
-				btnCaricaDip1 = new JButton("Carica dipendenti");
+				btnCaricaDip1 = new JButton("Cerca dipendenti");
+				btnCaricaDip1.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+					}
+				});
 				btnCaricaDip1.setBounds(1023, 490, 152, 29);
 				panel_2.add(btnCaricaDip1);
 				
@@ -554,7 +631,11 @@ public class DipendenteView implements ActionListener{
 				lblNewLabel_2.setBounds(856, 422, 61, 16);
 				panel_2.add(lblNewLabel_2);
 				
-				btnCaricaTutti_1= new JButton("Carica tutti!");
+				btnCaricaTutti_1= new JButton("Carica tutti");
+				btnCaricaTutti_1.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+					}
+				});
 				btnCaricaTutti_1.setBounds(856, 490, 150, 29);
 				panel_2.add(btnCaricaTutti_1);
 				
@@ -572,6 +653,7 @@ public class DipendenteView implements ActionListener{
 							String query="select * from dipendente where codice='"+codice_+"'";
 							PreparedStatement pst=connection.prepareStatement(query);
 							ResultSet rs=pst.executeQuery();
+							String id_turno=null;
 							while(rs.next()){
 								textNomeDipendente2.setText(rs.getString("nome"));
 								textCognomeDipendente2.setText(rs.getString("cognome"));
@@ -583,6 +665,8 @@ public class DipendenteView implements ActionListener{
 						        textDataAssunzione2.setText(rs.getString("data_assunzione"));
 						        textDataLicenziamento2.setText(rs.getString("data_licenziamento"));
 						        textTelefono2.setText(rs.getString("telefono"));
+						        id_turno=rs.getString("id_turno");
+						        
 								int mansione=0;
 								
 								String man;
@@ -603,6 +687,21 @@ public class DipendenteView implements ActionListener{
 								
 								
 							}
+							try{
+								String nome_turno=null;
+						        String query2="select nome_turno from turno where id_turno='"+id_turno+"'";
+						        Statement stmt = connection.createStatement();
+								ResultSet rs2=stmt.executeQuery(query2);
+								while(rs2.next()){
+									nome_turno=rs2.getString(1);
+								}
+
+								TurnoBox2.setSelectedItem(nome_turno);
+							}catch(Exception e1){
+								e1.printStackTrace();
+							}
+							
+							
 							pst.close();
 						}catch(Exception e1){
 							e1.printStackTrace();
@@ -610,6 +709,16 @@ public class DipendenteView implements ActionListener{
 					}
 				});
 				scrollPane_1.setViewportView(tabella);
+				
+				TurnoBox2 = new JComboBox();
+				TurnoBox2.setBounds(998, 288, 177, 27);
+				panel_2.add(TurnoBox2);
+				
+				fillComboBox2();
+				
+				JLabel lblNomeTurno = new JLabel("Nome turno");
+				lblNomeTurno.setBounds(856, 292, 98, 16);
+				panel_2.add(lblNomeTurno);
 				
 				btnTurni = new JButton("Turni");
 				btnTurni.setBounds(409, 2, 117, 29);
@@ -627,14 +736,15 @@ public class DipendenteView implements ActionListener{
 
 	
 	}
+	
 
-public void refreshTabella(String codice){
+public void refreshTabella1(String codice){
 		
 		try {
 			String sql1 ="select * from dipendente where id='"+codice+"'";
 			Statement st=connection.createStatement();
 			ResultSet rs=st.executeQuery(sql1);
-			tabella.setModel(DbUtils.resultSetToTableModel(rs));
+			table1.setModel(DbUtils.resultSetToTableModel(rs));
 			st.close();
 			rs.close();
 		} catch (SQLException e) {
@@ -643,6 +753,21 @@ public void refreshTabella(String codice){
 		}
 		
 	}
+public void refreshTabella(String codice){
+	
+	try {
+		String sql1 ="select * from dipendente where id='"+codice+"'";
+		Statement st=connection.createStatement();
+		ResultSet rs=st.executeQuery(sql1);
+		tabella.setModel(DbUtils.resultSetToTableModel(rs));
+		st.close();
+		rs.close();
+	} catch (SQLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	
+}
 	
 	public void refreshForm(){
 		textNomeDipendente1.setText("");
@@ -688,14 +813,14 @@ public void refreshTabella(String codice){
 	}
 	
 	  public DipendenteModel getDipendente(){
-	        model = new DipendenteModel(textNomeDipendente.getText().trim(), comboBoxRep.getSelectedItem().toString());
+	        model = new DipendenteModel(textNomeDipendente.getText().trim(), comboBoxRep.getSelectedItem().toString(), TurnoBox.getSelectedItem().toString());
 	        return model;       
 	    }
 	  
 	  
 	  public DipendenteModel getDipendente2(){
 		  String Mansione=null; Date AnnoNascita=null; Date Data_Assunzione=null;
-		  Date Data_Licen=null;
+		  Date Data_Licen=null; String Nome_Turno=null;
 		
 		  
 		  if(textAnnoNascita1.getText().isEmpty()==false){	
@@ -728,19 +853,19 @@ public void refreshTabella(String codice){
 		  }
 		
 			  
-			     
+			     Nome_Turno=TurnoBox.getSelectedItem().toString();
 				 Mansione=comboBoxMansione.getSelectedItem().toString();
 
 			 model = new DipendenteModel(textNomeDipendente1.getText().trim(),textCognomeDipendente1.getText().trim(),textCodiceFiscale1.getText().trim(),
 				  textIndirizzo1.getText().trim(), textEmail1.getText().trim(),AnnoNascita,Mansione,Data_Assunzione,Data_Licen, id, 
-				  textTelefono1.getText().trim(), immag); 
+				  textTelefono1.getText().trim(),Nome_Turno ); 
 		  return model;
 	  }
 	  
 
 	  public DipendenteModel getDipendente3(){
 		  String Mansione=null; Date AnnoNascita=null; Date Data_Assunzione=null;
-		  Date Data_Licen=null;
+		  Date Data_Licen=null; String Nome_Turno=null;
 		
 		  
 		  if(textAnnoNascita2.getText().isEmpty()==false){	
@@ -773,12 +898,12 @@ public void refreshTabella(String codice){
 		  }
 		
 			  
-			     
+		  		Nome_Turno=TurnoBox2.getSelectedItem().toString();
 				 Mansione=comboBoxRep1.getSelectedItem().toString();
 
 			 model = new DipendenteModel(textNomeDipendente2.getText().trim(),textCognomeDipendente2.getText().trim(),textCodiceFiscale2.getText().trim(),
 				  textIndirizzo2.getText().trim(), textEmail2.getText().trim(),AnnoNascita,Mansione,Data_Assunzione,Data_Licen, id, 
-				  textTelefono2.getText().trim(), immag); 
+				  textTelefono2.getText().trim(), Nome_Turno); 
 		  return model;
 	  }
 	  

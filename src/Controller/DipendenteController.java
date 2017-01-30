@@ -1,6 +1,8 @@
 package Controller;
 
+import java.awt.Font;
 import java.awt.event.ActionEvent;
+import javax.swing.*;
 
 
 
@@ -15,7 +17,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import javax.swing.JOptionPane;
+
 import com.connectiondb.*;
 
 import Controller.ProdottoController.ModificaProdotto;
@@ -38,7 +40,8 @@ public class DipendenteController {
 	    private DipendenteView view;
 	    Connection connection = null;
 		public String id;
-
+		public JLabel labelLogin;
+	    public String label;
 	    
 	    public DipendenteController(DipendenteView view){
 	        this.view = view;
@@ -52,7 +55,39 @@ public class DipendenteController {
 		    view.Logout(new Logout());
 		    view.prodottoView(new prodottoView());
 		    view.turniView(new turniView());
+		    view.addEliminaListener(new EliminaDipendente());
+		    
+		    labelLogin = new JLabel();
+	    	labelLogin.setBounds(143, 7, 61, 16);
+	    	labelLogin.setFont(new Font("Lucida Grande", Font.BOLD, 16));
+	    	view.frameDipendente.setTitle("Main Supermercato");
 	    } 
+	    
+	    class EliminaDipendente implements ActionListener {  
+	    	public void actionPerformed(ActionEvent e){
+	    		int action=JOptionPane.showConfirmDialog
+						(null, "Sei sicuro di voler eliminare il dipendente selezionato?","Elimina", JOptionPane.YES_NO_OPTION);
+				if (action==0){
+				try{
+				
+					int row=view.tabella.getSelectedRow();
+					String codice_=(view.tabella.getModel().getValueAt(row, 0)).toString();
+					
+					String query="Delete from Dipendente where codice='"+codice_+"'";
+					
+					PreparedStatement pst=connection.prepareStatement(query);
+					pst.execute();
+					
+					JOptionPane.showMessageDialog(null, "Dipendente eliminato correttamente!");
+					pst.close();
+					view.refreshTabella(id);
+					view.refreshForm();
+						}catch(Exception e1){
+							
+							e1.printStackTrace();
+						}
+	    	}
+	    }}
 	    
 	    class turniView implements ActionListener {
 	    	public void actionPerformed(ActionEvent e){
@@ -61,7 +96,10 @@ public class DipendenteController {
 	    		TurniModel theModel= new TurniModel(); 
 	    		TurniController theController= new TurniController(theView);
 	    		theController.id=id;
+	    		theController.label=label;
 	    		theView.frameTurni.setVisible(true);
+	    		labelLogin.setText(label);
+	    		theView.frameTurni.add(labelLogin);
 	    		view.frameDipendente.dispose();
 				
 	    		
@@ -74,7 +112,10 @@ public class DipendenteController {
 	    		ProdottoModel theModel= new ProdottoModel(); 
 	    		ProdottoController theController= new ProdottoController(theView);
 	    		theController.id=id;
+	    		theController.label=label;
 	    		theView.frameProdotto.setVisible(true);
+	    		labelLogin.setText(label);
+	    		theView.frameProdotto.add(labelLogin);
 	    		view.frameDipendente.dispose();
 				
 	    		
@@ -216,8 +257,9 @@ public class DipendenteController {
 	    
 	    class InserisciDipendenteListener implements ActionListener {
 	    	public void actionPerformed(ActionEvent e) {
-	    		
-	    			
+                
+                String Id_Turno=null;
+                
 	    		model=view.getDipendente2();
 
 	    		String NomeDipendente;
@@ -253,8 +295,33 @@ public class DipendenteController {
 	    		
 	    		String Mansione;
 	    		Mansione=model.getMansione();
+	    		
+	    		String Nome_Turno;
+	    		Nome_Turno=model.getNome_Turno();
+	    		
 	    	
 	    		try{
+	    			if(Nome_Turno!="")
+	    			{
+	    				String sq="select id_turno from turno where nome_turno='"+Nome_Turno+"' ";
+
+	    		        try {
+	    		            Statement stmt = connection.createStatement();
+	    		            ResultSet rs1 = stmt.executeQuery(sq);
+
+	    		            while (rs1.next()) {
+	    		            	Id_Turno=rs1.getString(1);
+	    		              //System.out.println(codice);
+	    		            }
+	    		            
+	    		            //connection.close();
+	    		        }catch(Exception e1) {
+	    		        	JOptionPane.showMessageDialog(null, e);
+	    		            throw e1;
+	    		        }
+	    		        
+	    			}	    				
+	    			
 	    		
 	    			String sql ="insert into dipendente (nome,cognome,cod_fisc,indirizzo,datan,mansione,data_assunzione,id,email,data_licenziamento,telefono,id_turno) values (?,?,?,?,?,?,?,?,?,?,?,?)";
 						
@@ -269,10 +336,12 @@ public class DipendenteController {
 				}else{
 					pst1.setString(2, CognomeDipendente);
 				}
-				if (CodiceFisc.equals(" ")==true){
-					JOptionPane.showMessageDialog(null, "Inserire codice Fiscale!");
-				}else{
-					pst1.setString(3, CodiceFisc);
+				if (CodiceFisc.equals("")==true){
+					JOptionPane.showMessageDialog(null, "Inserire codice fiscale!");			
+				}else if (CodiceFisc.length()==16){
+					pst1.setString(3,CodiceFisc);
+					}else{
+					JOptionPane.showMessageDialog(null, "Codice fiscale errato!");
 				}
 				if (Indirizzo.equals(" ")==true){
 					JOptionPane.showMessageDialog(null, "Inserire indirizzo");
@@ -289,18 +358,30 @@ public class DipendenteController {
 				pst1.setDate(7, Data_Ass);
 				pst1.setString(8, id);
 				pst1.setString(9, Email);
-				pst1.setDate(10, Data_Lic);
+				
+				if(Data_Lic !=null){
+					if (Data_Lic.after(Data_Ass)==true) {
+						pst1.setDate(10, Data_Lic);		
+						}else{
+		    					JOptionPane.showMessageDialog(null, "Data licenziamento errata");
+		    			}
+				}else{
+					pst1.setDate(10, Data_Lic);	
+				}
+				
 				pst1.setString(11, Telefono);
-				pst1.setString(12, "1");
+				pst1.setString(12, Id_Turno);
+				
 			    pst1.execute();
 				
 				JOptionPane.showMessageDialog(null, "Dipendente  inserito!");
 				
-				//view.refreshTabella(id);	
+				view.refreshTabella1(id);
+				view.refreshTabella(id);
 			    view.refreshForm();
 				pst1.close();
 			} catch (Exception e2){
-				System.out.println(NomeDipendente);
+				
 
 				// TODO Auto-generated catch block
 				JOptionPane.showMessageDialog(null, "Inserire i campi obbligatori o in modo corretto!");
@@ -315,7 +396,7 @@ public class DipendenteController {
 	    	public void actionPerformed(ActionEvent e){
 	
 	    		    		
-	    		    			
+	    		    		String Id_Turno=null;
 	    		    		model=view.getDipendente3();
 
 	    		    		String NomeDipendente;
@@ -351,13 +432,41 @@ public class DipendenteController {
 	    		    		
 	    		    		String Mansione;
 	    		    		Mansione=model.getMansione();
+	    		    		
+	    		    		String Nome_Turno;
+	    		    		Nome_Turno=model.getNome_Turno();
+	    		    		
+	    		    		
+	    		    		try{
+	    		    
+	    		    		if(Nome_Turno!="")
+	    		    			{
+	    		    				String sq="select id_turno from turno where nome_turno='"+Nome_Turno+"' ";
+
+	    		    		        try {
+	    		    		            Statement stmt = connection.createStatement();
+	    		    		            ResultSet rs1 = stmt.executeQuery(sq);
+
+	    		    		            while (rs1.next()) {
+	    		    		            	Id_Turno=rs1.getString(1);
+	    		    		              //System.out.println(codice);
+	    		    		            }
+	    		    		            
+	    		    		            //connection.close();
+	    		    		        }catch(Exception e1) {
+	    		    		        	JOptionPane.showMessageDialog(null, e);
+	    		    		            throw e1;
+	    		    		        }
+	    		    		        
+	    		    			}
+	    		    		
 	    		    	
-	    		try{
+	    		
 	    		
 	    		int row=view.tabella.getSelectedRow();
 				String codice_=(view.tabella.getModel().getValueAt(row, 0)).toString();
 				String query="UPDATE dipendente set nome=?, cognome=? , cod_fisc=?, indirizzo=?,email=?,"
-						+ "datan=?,mansione=?,data_assunzione=?, data_licenziamento=?,telefono=?  where codice='"+codice_+"' and id='"+id+"'";
+						+ "datan=?,mansione=?,data_assunzione=?, data_licenziamento=?,telefono=?, id_turno=?  where codice='"+codice_+"' and id='"+id+"'";
 				
 				
 				PreparedStatement pst1=connection.prepareStatement(query);
@@ -372,9 +481,11 @@ public class DipendenteController {
 					pst1.setString(2,CognomeDipendente);
 				}
 				if (CodiceFisc.equals("")==true){
-					JOptionPane.showMessageDialog(null, "Inserire codice fiscale!");
-				}else{
+					JOptionPane.showMessageDialog(null, "Inserire codice fiscale!");			
+				}else if(CodiceFisc.length()==16){
 					pst1.setString(3,CodiceFisc);
+					}else{
+					JOptionPane.showMessageDialog(null, "Codice fiscale errato!");
 				}
 				if(Indirizzo.equals("")==true){
 					JOptionPane.showMessageDialog(null, "Inserire indirizzo!");
@@ -385,36 +496,48 @@ public class DipendenteController {
 				pst1.setString(5, Email);
 
 				pst1.setDate(6, AnnoNascita);
-				pst1.setString(7, Mansione);
-				pst1.setDate(8, Data_Ass);
-				pst1.setDate(9, Data_Lic);
-				pst1.setString(10, Telefono);
-			    pst1.execute();
-				
-				
 				if(Mansione!=""){
 					pst1.setString(7, Mansione);
 
 				}else{
 					JOptionPane.showMessageDialog(null, "Selezionare una mansione!");
 					}
+				pst1.setDate(8, Data_Ass);
 				
+				if(Data_Lic !=null){
+					if (Data_Lic.after(Data_Ass)==true) {
+						pst1.setDate(9, Data_Lic);		
+						}else{
+		    					JOptionPane.showMessageDialog(null, "Data licenziamento errata");
+		    			}
+				}else{
+					pst1.setDate(9, Data_Lic);	
+				}
+				
+				
+				pst1.setString(10, Telefono);
+				pst1.setString(11, Id_Turno);
 				pst1.executeUpdate();
 				
 				JOptionPane.showMessageDialog(null, "Dipendente modificato correttamente!");
 				pst1.close();
 				view.refreshForm();
-			
+				view.refreshTabella(id);
+				
 					}catch(Exception e1){
 						JOptionPane.showMessageDialog(null, "Inserire i campi obbligatori o in modo corretto!");
 						//e1.printStackTrace();
 					}
-	    	
 	    		
-	    }}
-	    
-	    
+	    		
+	    	  }
+	    			}
 }
+	    	
+	    
+
+	    	            	
+	    		
 
 
 

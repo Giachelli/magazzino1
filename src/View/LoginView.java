@@ -1,27 +1,21 @@
 package View;
 
-
-import java.awt.Image
-;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-
 import Model.LoginModel;
 
 /**
- * Classe LoginView1.java
+ * Classe LoginView.java
  * Questa classe implementa la vista, ovvero tutti i componenti visivi relativi
- * e appartenenti al frame "frame".
+ * e appartenenti al frame "frameLogin".
  * 
  * @author Iezzi Valerio
  */
@@ -34,13 +28,15 @@ public class LoginView implements ActionListener{
     private JButton btnAccedi;
     private JPasswordField textPass;
     private JTextField textUser;
+    private JButton btnAccedi2;
+    private JLabel lblO;
 	
 
 	
 	public LoginView() {
 		
 		frameLogin = new JFrame();
-		frameLogin.setBounds(100, 100, 450, 200);
+		frameLogin.setBounds(100, 100, 421, 251);
 		frameLogin.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frameLogin.getContentPane().setLayout(null);
 		
@@ -71,9 +67,22 @@ public class LoginView implements ActionListener{
 		
 		
 		btnAccedi = new JButton("Accedi");
-		btnAccedi.setBounds(190, 131, 117, 29);
+		btnAccedi.setBounds(154, 124, 117, 29);
 		btnAccedi.addActionListener(this);
 		frameLogin.getContentPane().add(btnAccedi);
+		
+		btnAccedi2 = new JButton("Accedi come ospite");
+		btnAccedi2.setBounds(136, 175, 152, 29);
+		frameLogin.getContentPane().add(btnAccedi2);
+		
+		lblO = new JLabel("altrimenti");
+		lblO.setBounds(176, 156, 72, 16);
+		frameLogin.getContentPane().add(lblO);
+
+	}
+	
+	public void showMessage(String msg){
+        JOptionPane.showMessageDialog(null, msg);
 
 	}
 	
@@ -82,23 +91,25 @@ public class LoginView implements ActionListener{
 	/**
 	 * getUser ci mermette di recuperare e passare al model il testo inserirto nelle textUser e textPass.
 	 */
-    public LoginModel getUser(){
+    @SuppressWarnings("deprecation")
+	public LoginModel getUser(){
         model = new LoginModel(textUser.getText().trim(), textPass.getText().trim());
         return model;       
     }
    
-    public void showMessage(String msg){
-        JOptionPane.showMessageDialog(null, msg);
-    }
-   
     /**
-	 * Qui viene dichiarata la funzione/azione del pulsante btnAccedi, implementata poi nel controller.
+	 * Qui viene dichiarata l'azione del pulsante btnAccedi, implementata poi nel controller.
 	 */
+	public void addLoginListener(ActionListener log) {
+          btnAccedi.addActionListener(log);     
+    }
 	
-    public void addLoginListener(ActionListener log) {
-          btnAccedi.addActionListener(log);
-          
-          
-        }
+	/**
+	 * Qui viene dichiarata l'azione del pulsante btnAccedi2, implementata poi nel controller,
+	 * per accedere alla view dell'utente ospite.
+	 */
+    public void addLogin2Listener(ActionListener log) {
+        btnAccedi2.addActionListener(log);
+     }
 
 }
